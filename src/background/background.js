@@ -147,25 +147,39 @@ function turndown(content, options, article) {
     const langMatch = node.id?.match(/code-lang-(.+)/);
     const language = langMatch?.length > 0 ? langMatch[1] : '';
 
-    const code = node.innerText;
+    var code;
 
-    const fenceChar = options.fence.charAt(0);
-    let fenceSize = 3;
-    const fenceInCodeRegex = new RegExp('^' + fenceChar + '{3,}', 'gm');
+    if (language) {
+      var div = document.createElement('div');
+      document.body.appendChild(div);
+      div.appendChild(node);
+      code = node.innerText;
+      div.remove();
+    } else {
+      code = node.innerHTML;
+    }
 
-    let match;
+    var fenceChar = options.fence.charAt(0);
+    var fenceSize = 3;
+    var fenceInCodeRegex = new RegExp('^' + fenceChar + '{3,}', 'gm');
+
+    var match;
     while ((match = fenceInCodeRegex.exec(code))) {
       if (match[0].length >= fenceSize) {
         fenceSize = match[0].length + 1;
       }
     }
 
-    const fence = repeat(fenceChar, fenceSize);
-
+    var fence = repeat(fenceChar, fenceSize);
+    var endFence = fence;
+    if (!language){
+      fence = '<pre>'
+      endFence = '</pre>'
+    }
     return (
       '\n\n' + fence + language + '\n' +
       code.replace(/\n$/, '') +
-      '\n' + fence + '\n\n'
+      '\n' + endFence + '\n\n'
     )
   }
 
