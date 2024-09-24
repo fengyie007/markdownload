@@ -38,6 +38,7 @@
       "background/turndown.js",
       "background/turndown-plugin-gfm.js",
       "/background/Readability.js",
+      "background/md5.min.js",
       "shared/context-menus.js",
       "shared/default-options.js",
       "background/background.js"

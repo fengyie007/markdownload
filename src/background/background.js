@@ -245,10 +245,28 @@ function validateUri(href, baseURI) {
 }
 
 function getImageFilename(src, options, prependFilePath = true) {
-  const slashPos = src.lastIndexOf('/');
-  const queryPos = src.indexOf('?');
-  let filename = src.substring(slashPos + 1, queryPos > 0 ? queryPos : src.length);
+//  const slashPos = src.lastIndexOf('/');
+//  const queryPos = src.indexOf('?');
+//  let filename = src.substring(slashPos + 1, queryPos > 0 ? queryPos : src.length);
 
+  let filename = ""
+  if (src.startsWith('data:')) {
+    // 处理 data URL
+    const mimeType = src.substring(5, src.indexOf(';'));
+    const extension = mimeType.split('/')[1];
+    filename = MD5(src) + `.${extension}`;
+  } else {
+    const parsedUrl = new URL(src);
+    const pathname = parsedUrl.pathname;
+    filename = pathname.split('/').pop();
+    if(src.endsWith("webp")){
+      filename = filename.split('.')[0]+".webp"
+    }
+    if(!filename.includes('.')){
+      filename = MD5(src)
+    }
+  }
+  
   let imagePrefix = (options.imagePrefix || '');
 
   if (prependFilePath && options.title.includes('/')) {
